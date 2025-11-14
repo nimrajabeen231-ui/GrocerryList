@@ -6,27 +6,26 @@
 //
 
 import SwiftUI
-import SwiftData
+import UserNotifications
 
 @main
-struct GrocerryListApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+struct GroceryListApp: App {
+    
+    init() {
+        // Request notification permission when the app starts (unchanged)
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("Notification permission granted.")
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
         }
-    }()
-
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // 🚨 START WITH SPLASH SCREEN 🚨
+            SplashScreenView()
         }
-        .modelContainer(sharedModelContainer)
     }
 }
